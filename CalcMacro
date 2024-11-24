@@ -1,0 +1,39 @@
+REM ***** BASIC *****
+
+Sub DeleteRowsKeepingEvery32nd()
+    ' Define variables to hold the active sheet, document, last row, and iteration counter
+    Dim oSheet As Object
+    Dim oDoc As Object
+    Dim lLastRow As Long
+    Dim i As Long
+    
+    ' Assign the current document (spreadsheet) to oDoc
+    oDoc = ThisComponent
+    
+    ' Get the currently active sheet within the document
+    oSheet = oDoc.CurrentController.ActiveSheet
+    
+    ' Determine the total number of rows in the sheet (0-based index)
+    lLastRow = oSheet.Rows.getCount() - 1
+    
+    ' Set the starting row for deletion; starting from row 3 (row index 2)
+    i = 2
+    
+    ' Loop through rows until the last row is processed
+    Do While i <= lLastRow
+        ' Check if there are at least 31 rows ahead to delete
+        If i + 31 <= lLastRow Then
+            ' Delete 31 rows starting from the current row
+            oSheet.Rows.removeByIndex(i, 31)
+        Else
+            ' If less than 31 rows remain, delete up to the last row
+            oSheet.Rows.removeByIndex(i, lLastRow - i)
+        End If
+        
+        ' Move to the next set, skipping the row we want to keep
+        i = i + 1
+        
+        ' Update the last row number dynamically after deletion
+        lLastRow = oSheet.Rows.getCount() - 1
+    Loop
+End Sub
